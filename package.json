@@ -12,7 +12,9 @@
     },
     "dependencies": {
         "@inertiajs/vue3": "^1.0.15",
+        "@vitejs/plugin-vue": "^5.0.4",
         "vue": "^3.4.21",
-        "vuedraggable": "^2.24.3"
+        "vuedraggable": "^4.1.0",
+        "vuetify": "^3.4.0-beta.1"
     }
 }
