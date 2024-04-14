@@ -1,5 +1,5 @@
 <template>
-    <v-card :variant="variant ?? 'outlined'" :class="classCard">
+    <v-card :variant="variant ?? 'outlined'" :class="classCard" :width="width">
         <v-card-item v-if="title || subtitle">
             <v-card-title>
                 {{ title }}
@@ -24,5 +24,6 @@ const props = defineProps({
     variant: String,
     classCard: String,
     text: String,
+    width: String
 })
 </script>

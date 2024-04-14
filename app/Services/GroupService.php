@@ -1,0 +1,115 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Group;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+
+class GroupService
+{
+    protected Model $model;
+
+    public function __construct(Group $group)
+    {
+        $this->model = $group;
+    }
+
+    public function model(): Group
+    {
+        return $this->model;
+    }
+
+    // public function select2()
+    // {
+    //     $group = $this->model()
+    //         ->selectRaw('id as value, nama as label')
+    //         ->get();
+
+    //     return $group;
+    // }
+
+    public function all(): Collection
+    {
+        $group = $this->model->all();
+
+        return $group;
+    }
+
+    public function paginate(int $page): LengthAwarePaginator
+    {
+        $group = $this->model->paginate($page);
+
+        return $group;
+    }
+
+    public function create($request)
+    {
+        DB::beginTransaction();
+        try {
+            $group = $this->model->create($request);
+
+            DB::commit();
+
+            return $group;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw new \ErrorException($th->getMessage());
+        }
+    }
+
+    public function show($id): Group
+    {
+        return $this->model->find($id);
+    }
+
+    public function findMany(array $id): Collection
+    {
+        return $this->model->find($id);
+    }
+
+    public function update(array $data, $group): Group
+    {
+        DB::beginTransaction();
+        try {
+            $group->update($data);
+
+            DB::commit();
+
+            return $group;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw new \ErrorException($th->getMessage());
+        }
+    }
+
+    public function destroy(Group $group): bool
+    {
+        try {
+            $group = $group->delete();
+
+            return $group;
+        } catch (\Throwable $th) {
+            throw new \ErrorException($th->getMessage());
+        }
+    }
+
+    public function destroyMultiple(array $id): bool
+    {
+        try {
+            $group = $this->findMany($id);
+            foreach ($group as $group) {
+                $group->delete();
+            }
+
+            return true;
+        } catch (\Throwable $th) {
+            throw new \ErrorException($th->getMessage());
+        }
+    }
+}
