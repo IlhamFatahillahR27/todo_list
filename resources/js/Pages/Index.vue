@@ -55,8 +55,12 @@
                                                 >
                                                 <v-color-picker
                                                     v-model="item.color"
-                                                    hide-inputs
+                                                    hide-sliders
+                                                    hide-canvas
                                                     show-swatches
+                                                    :update:modelValue="
+                                                        changeColor(item.color, item.id)
+                                                    "
                                                 ></v-color-picker>
                                             </v-list-item>
                                         </v-list>
@@ -117,7 +121,7 @@
                                                 :style="{
                                                     'background-color':
                                                         item.color,
-                                                    'color': calculateColor(
+                                                    color: calculateColor(
                                                         item.color
                                                     ),
                                                 }"
@@ -135,7 +139,9 @@
                                                         element.name
                                                     }}</v-card-title>
                                                     <v-card-subtitle>{{
-                                                        dateTimeFormatter(element.created_at)
+                                                        dateTimeFormatter(
+                                                            element.created_at
+                                                        )
                                                     }}</v-card-subtitle>
                                                 </v-card-item>
                                                 <v-card-actions>
@@ -149,11 +155,6 @@
                                         </v-sheet>
                                     </template>
                                 </draggable>
-
-                                <rawDisplayer
-                                    :value="item.tasks"
-                                    title="tasks"
-                                />
                             </v-card-text>
                         </v-card>
                     </v-sheet>
@@ -173,19 +174,33 @@ import AddColumn from "@/Pages/AddColumn.vue";
 import Default from "@/Layouts/Default.vue";
 import GroupInterface from "@/Interfaces/GroupInterface.ts";
 import { dateTimeFormatter } from "@/src/helper/formatter.ts";
+import axios from "axios";
 
 const props = defineProps({
     groups: Array as () => GroupInterface[],
 });
 
 const groupData = ref(props.groups);
-const myArray = ref();
-const myArray1 = ref();
+let timeout = 0;
 
 onMounted(() => {});
 
-const c2 = ref("#00ff00");
-const textColor = ref("");
+const changeColor = (color, id) => {
+    clearTimeout(timeout);
+
+    timeout = setTimeout(() => {
+        const url = route('group.update', id);
+        // console.log(url);
+
+        axios.put(url, {
+            color: color
+        }).then(() => {
+
+        }).catch((error) => {
+            console.log(error);
+        })
+    }, 2000);
+};
 
 const calculateColor = (color) => {
     const rgb = color.match(/\d+/g);

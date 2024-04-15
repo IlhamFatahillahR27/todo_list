@@ -5,6 +5,9 @@ import { createVuetify } from "vuetify";
 import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
 import { aliases, mdi } from "vuetify/iconsets/mdi";
+import { ZiggyVue } from "ziggy-js";
+import { Ziggy } from "./ziggy.js";
+import { route } from "../../vendor/tightenco/ziggy";
 import "@mdi/font/css/materialdesignicons.css";
 
 const vuetify = createVuetify({
@@ -25,7 +28,12 @@ createInertiaApp({
         return pages[`./Pages/${name}.vue`];
     },
     setup({ el, App, props, plugin }) {
-        const app = createApp({ render: () => h(App, props) }).use(plugin).use(vuetify);
+        const app = createApp({ render: () => h(App, props) })
+            .mixin({ methods: { route } })
+            .use(plugin)
+            .use(vuetify)
+            .use(ZiggyVue)
+            .use(Ziggy);
 
         app.mount(el);
     },

@@ -18,6 +18,7 @@
         "moment": "^2.30.1",
         "vue": "^3.4.21",
         "vuedraggable": "^4.1.0",
-        "vuetify": "^3.4.0-beta.1"
+        "vuetify": "^3.4.0-beta.1",
+        "ziggy-js": "^2.1.0"
     }
 }

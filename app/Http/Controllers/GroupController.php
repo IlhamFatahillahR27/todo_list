@@ -60,7 +60,18 @@ class GroupController extends Controller
      */
     public function update(Request $request, Group $group)
     {
-        //
+        if ($request->wantsJson()) {
+            try {
+                $group = $this->groupService->update($request->all(), $group);
+
+                return response()->json([
+                    'success' => true,
+                    'data'    => $group,
+                ]);
+            } catch (\Throwable $th) {
+                throw new \ErrorException($th->getMessage());
+            }
+        }
     }
 
     /**
