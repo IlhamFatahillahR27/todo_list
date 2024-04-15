@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helper;
 use App\Models\Group;
 use App\Services\GroupService;
 use Illuminate\Http\Request;
@@ -19,8 +20,10 @@ class GroupController extends Controller
      */
     public function index()
     {
-        $groups = $this->groupService->all()->load('tasks');
-        return Inertia::render('Index', compact('groups'));
+        $groups = $this->groupService->regularGroup();
+        $complete_group = Helper::completeGroup()->load('tasks');
+
+        return Inertia::render('Index', compact('groups', 'complete_group'));
     }
 
     /**

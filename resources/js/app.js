@@ -1,5 +1,6 @@
 import { createApp, h } from "vue";
 import { createInertiaApp } from "@inertiajs/vue3";
+import { createPinia } from "pinia";
 import "vuetify/styles";
 import { createVuetify } from "vuetify";
 import * as components from "vuetify/components";
@@ -9,6 +10,8 @@ import { ZiggyVue } from "ziggy-js";
 import { Ziggy } from "./ziggy.js";
 import { route } from "../../vendor/tightenco/ziggy";
 import "@mdi/font/css/materialdesignicons.css";
+
+const pinia = createPinia();
 
 const vuetify = createVuetify({
     components,
@@ -31,6 +34,7 @@ createInertiaApp({
         const app = createApp({ render: () => h(App, props) })
             .mixin({ methods: { route } })
             .use(plugin)
+            .use(pinia)
             .use(vuetify)
             .use(ZiggyVue)
             .use(Ziggy);

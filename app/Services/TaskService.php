@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Group;
+use App\Models\Task;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -11,71 +11,59 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class GroupService
+class TaskService
 {
     protected Model $model;
 
-    public function __construct(Group $group)
+    public function __construct(Task $task)
     {
-        $this->model = $group;
+        $this->model = $task;
     }
 
-    public function model(): Group
+    public function model(): Task
     {
         return $this->model;
     }
 
     // public function select2()
     // {
-    //     $group = $this->model()
+    //     $task = $this->model()
     //         ->selectRaw('id as value, nama as label')
     //         ->get();
 
-    //     return $group;
+    //     return $task;
     // }
 
     public function all(): Collection
     {
-        $group = $this->model->all();
+        $task = $this->model->all();
 
-        return $group;
-    }
-
-    public function regularGroup()
-    {
-        $group = $this->model
-            ->where('for_complete', false)
-            ->with(['tasks' => function ($query) {
-                $query->orderBy('updated_at', 'desc');
-            }])
-            ->get();
-
-        return $group;
+        return $task;
     }
 
     public function paginate(int $page): LengthAwarePaginator
     {
-        $group = $this->model->paginate($page);
+        $task = $this->model->paginate($page);
 
-        return $group;
+        return $task;
     }
 
     public function create($request)
     {
         DB::beginTransaction();
         try {
-            $group = $this->model->create($request);
+            $task = $this->model->create($request);
 
             DB::commit();
 
-            return $group;
+            return $task;
         } catch (\Throwable $th) {
             DB::rollBack();
             throw new \ErrorException($th->getMessage());
         }
     }
 
-    public function show($id): Group
+    public function show($id): Task
     {
         return $this->model->find($id);
     }
@@ -85,27 +73,27 @@ class GroupService
         return $this->model->find($id);
     }
 
-    public function update(array $data, $group): Group
+    public function update(array $data, $task): Task
     {
         DB::beginTransaction();
         try {
-            $group->update($data);
+            $task->update($data);
 
             DB::commit();
 
-            return $group;
+            return $task;
         } catch (\Throwable $th) {
             DB::rollBack();
             throw new \ErrorException($th->getMessage());
         }
     }
 
-    public function destroy(Group $group): bool
+    public function destroy(Task $task): bool
     {
         try {
-            $group = $group->delete();
+            $task = $task->delete();
 
-            return $group;
+            return $task;
         } catch (\Throwable $th) {
             throw new \ErrorException($th->getMessage());
         }
@@ -114,9 +102,9 @@ class GroupService
     public function destroyMultiple(array $id): bool
     {
         try {
-            $group = $this->findMany($id);
-            foreach ($group as $group) {
-                $group->delete();
+            $task = $this->findMany($id);
+            foreach ($task as $task) {
+                $task->delete();
             }
 
             return true;
