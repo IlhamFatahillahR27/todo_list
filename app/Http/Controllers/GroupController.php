@@ -82,6 +82,16 @@ class GroupController extends Controller
      */
     public function destroy(Group $group)
     {
-        //
+        try {
+
+            $group = $this->groupService->destroy($group);
+
+            return response()->json([
+                'success' => true,
+                'data'    => $group,
+            ]);
+        } catch (\Throwable $th) {
+            throw new \ErrorException($th->getMessage());
+        }
     }
 }

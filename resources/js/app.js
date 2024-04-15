@@ -6,6 +6,8 @@ import { createVuetify } from "vuetify";
 import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
 import { aliases, mdi } from "vuetify/iconsets/mdi";
+import VueSweetalert2 from "vue-sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
 import { ZiggyVue } from "ziggy-js";
 import { Ziggy } from "./ziggy.js";
 import { route } from "../../vendor/tightenco/ziggy";
@@ -36,6 +38,7 @@ createInertiaApp({
             .use(plugin)
             .use(pinia)
             .use(vuetify)
+            .use(VueSweetalert2)
             .use(ZiggyVue)
             .use(Ziggy);
 

@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 import { ref } from "vue";
-import moment from "moment";
+import Swal from 'sweetalert2'
 
 export const useGroupStore = defineStore("group", () => {
     const groups = ref([]);
@@ -50,6 +50,32 @@ export const useGroupStore = defineStore("group", () => {
     function cancelEditGroup(groupIndex) {
         groups.value[groupIndex].title = itemEditBefore.value.title;
         editedGroup.value = null;
+    }
+
+    function deleteGroup(id, groupIndex) {
+        groupLoading.value = groupIndex;
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const url = route("group.destroy", id);
+
+                axios.delete(url).then(() => {
+                    groups.value.splice(groupIndex, 1);
+                }).catch((error) => {
+                    console.log(error);
+                }).finally(() => {
+                    groupLoading.value = null;
+                })
+            }
+        });
     }
 
     function addTask(groupIndex) {
@@ -156,5 +182,6 @@ export const useGroupStore = defineStore("group", () => {
         groupLoading,
         itemEditBefore,
         cancelEditGroup,
+        deleteGroup,
     };
 });

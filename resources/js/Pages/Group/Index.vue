@@ -73,6 +73,7 @@
                             </v-list-item>
                             <v-list-item
                                 value="Delete"
+                                @click="store.deleteGroup(item.id, index)"
                                 v-if="! item.is_default"
                             >
                                 <v-list-item-title
