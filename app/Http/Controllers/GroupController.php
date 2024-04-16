@@ -106,4 +106,9 @@ class GroupController extends Controller
             throw new \ErrorException($th->getMessage());
         }
     }
+
+    public function findByName(Request $request)
+    {
+        return response()->json($this->groupService->findByName($request->name));
+    }
 }

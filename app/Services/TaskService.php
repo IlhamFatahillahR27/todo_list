@@ -98,18 +98,4 @@ class TaskService
             throw new \ErrorException($th->getMessage());
         }
     }
-
-    public function destroyMultiple(array $id): bool
-    {
-        try {
-            $task = $this->findMany($id);
-            foreach ($task as $task) {
-                $task->delete();
-            }
-
-            return true;
-        } catch (\Throwable $th) {
-            throw new \ErrorException($th->getMessage());
-        }
-    }
 }

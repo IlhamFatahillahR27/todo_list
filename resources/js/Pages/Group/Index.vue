@@ -46,7 +46,7 @@
                             </v-list-item>
                         </v-list>
                     </v-menu>
-                    <v-menu v-if="! item.for_complete">
+                    <v-menu v-if="!item.for_complete">
                         <template v-slot:activator="{ props }">
                             <v-btn
                                 icon="mdi-dots-vertical"
@@ -64,8 +64,13 @@
                             </v-list-item>
                             <v-list-item
                                 value="Edit"
-                                @click="[ store.editedGroup = index , store.itemEditBefore = { ...item } ]"
-                                v-if="! item.is_default"
+                                @click="
+                                    [
+                                        (store.editedGroup = index),
+                                        (store.itemEditBefore = { ...item }),
+                                    ]
+                                "
+                                v-if="!item.is_default"
                             >
                                 <v-list-item-title
                                     >Edit Column</v-list-item-title
@@ -74,7 +79,7 @@
                             <v-list-item
                                 value="Delete"
                                 @click="store.deleteGroup(item.id, index)"
-                                v-if="! item.is_default"
+                                v-if="!item.is_default"
                             >
                                 <v-list-item-title
                                     >Delete Column</v-list-item-title
@@ -84,10 +89,11 @@
                     </v-menu>
                 </v-card-actions>
             </v-card-title>
-            <v-card-title
-                v-else
-            >
-                <v-form class="d-flex flex-row justify-space-between align-center mt-4" @submit.prevent="store.saveEditGroup(index, item)">
+            <v-card-title v-else>
+                <v-form
+                    class="d-flex flex-row justify-space-between align-center mt-4"
+                    @submit.prevent="store.saveEditGroup(index, item)"
+                >
                     <v-text-field
                         v-model="item.title"
                         clearable
@@ -96,13 +102,22 @@
                         variant="outlined"
                     ></v-text-field>
                     <v-card-actions class="d-flex justify-end align-center">
-                        <v-btn icon size="small" @click="store.cancelEditGroup(index)">
+                        <v-btn
+                            icon
+                            size="small"
+                            @click="store.cancelEditGroup(index)"
+                        >
                             <v-icon icon="mdi-close"></v-icon>
                             <v-tooltip activator="parent" location="bottom"
                                 >Cancel</v-tooltip
                             >
                         </v-btn>
-                        <v-btn icon size="small" @click="store.saveEditGroup(index, item)" type="submit">
+                        <v-btn
+                            icon
+                            size="small"
+                            @click="store.saveEditGroup(index, item)"
+                            type="submit"
+                        >
                             <v-icon icon="mdi-check"></v-icon>
                             <v-tooltip activator="parent" location="bottom"
                                 >Save</v-tooltip
@@ -119,7 +134,7 @@
                     size="x-large"
                     block
                     @click="store.addTask(index)"
-                    v-if="item.tasks.length == 0  && ! item.for_complete"
+                    v-if="item.tasks.length == 0 && !item.for_complete"
                     >Add List</v-btn
                 >
                 <draggable
@@ -200,8 +215,75 @@
                                         clearable
                                         label="Title"
                                         variant="outlined"
-                                    ></v-text-field>
-                                    <v-card-actions class="d-flex justify-end">
+                                        @input="
+                                            store.checkExistTask(element.name)
+                                        "
+                                    >
+                                        <template #details>
+                                            <v-message>
+                                                <template
+                                                    v-if="
+                                                        store.validNewTask !=
+                                                        null
+                                                    "
+                                                >
+                                                    <span
+                                                        v-if="
+                                                            store.validNewTask
+                                                        "
+                                                    >
+                                                        Title is freshly new
+                                                    </span>
+                                                    <span v-else>
+                                                        Title is already
+                                                        available.
+                                                        <a
+                                                            class="text-caption text-decoration-none"
+                                                            :style="{
+                                                                color: calculateColor(
+                                                                    item.color
+                                                                ),
+                                                            }"
+                                                            href="#"
+                                                            rel="noopener noreferrer"
+                                                            @click="store.detailViewed = true"
+                                                        >
+                                                            <b
+                                                                >See details here...</b
+                                                            ></a
+                                                        >
+                                                    </span>
+                                                </template>
+                                                <span v-else>
+                                                    Title is required
+                                                </span>
+                                            </v-message>
+                                        </template>
+                                        <template v-slot:append>
+                                            <v-btn
+                                                :icon="
+                                                    store.validNewTask != null
+                                                        ? store.validNewTask
+                                                            ? 'mdi-check'
+                                                            : 'mdi-close'
+                                                        : 'mdi-pause'
+                                                "
+                                                :color="
+                                                    store.validNewTask != null
+                                                        ? store.validNewTask
+                                                            ? 'success'
+                                                            : 'error'
+                                                        : 'info'
+                                                "
+                                                size="x-small"
+                                                disabled
+                                            ></v-btn>
+                                        </template>
+                                    </v-text-field>
+                                    <v-card-actions
+                                        class="d-flex justify-end"
+                                        v-if="store.validNewTask != null"
+                                    >
                                         <v-btn
                                             variant="outlined"
                                             @click="

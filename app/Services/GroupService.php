@@ -112,17 +112,13 @@ class GroupService
         }
     }
 
-    public function destroyMultiple(array $id): bool
-    {
-        try {
-            $group = $this->findMany($id);
-            foreach ($group as $group) {
-                $group->delete();
-            }
 
-            return true;
-        } catch (\Throwable $th) {
-            throw new \ErrorException($th->getMessage());
-        }
+    public function findByName($name)
+    {
+        return $this->model
+            ->with(['tasks' => function ($query) use ($name) {
+                $query->where('name', 'like', '%' . $name . '%')->orderBy('updated_at', 'desc');
+            }])
+            ->get();
     }
 }

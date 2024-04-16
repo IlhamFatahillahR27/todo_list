@@ -10,6 +10,9 @@ export const useGroupStore = defineStore("group", () => {
     const itemEditBefore = ref();
 
     const editedGroup = ref();
+    const validNewTask = ref();
+    const foundTask = ref([]);
+    const detailViewed = ref(false);
 
     let timeout = 0;
 
@@ -127,6 +130,27 @@ export const useGroupStore = defineStore("group", () => {
         });
     }
 
+    function checkExistTask (value) {
+        clearTimeout(timeout);
+
+        timeout = setTimeout(() => {
+            taskLoading.value = 'new';
+            const url = route('task.findByName', { name: value });
+
+            axios
+                .get(url)
+                .then(({ data }) => {
+                    validNewTask.value = data.length == 0;
+                    foundTask.value = data;
+                })
+                .catch((error) => {
+                    console.log(error);
+                }).finally(() => {
+                    taskLoading.value = null;
+                });
+        }, 2000);
+    }
+
     function saveNewTask(groupIndex, taskIndex, value) {
         const url = route("task.store");
         groupLoading.value = groupIndex;
@@ -213,6 +237,7 @@ export const useGroupStore = defineStore("group", () => {
         saveEditGroup,
         editedGroup,
         addTask,
+        checkExistTask,
         saveNewTask,
         cancelAddTask,
         completeTask,
@@ -223,5 +248,8 @@ export const useGroupStore = defineStore("group", () => {
         itemEditBefore,
         cancelEditGroup,
         deleteGroup,
+        validNewTask,
+        foundTask,
+        detailViewed,
     };
 });

@@ -66,6 +66,8 @@
                     <AddColumn />
                 </v-sheet>
             </v-sheet>
+
+            <DetailExist />
         </template>
     </Default>
 </template>
@@ -73,6 +75,7 @@
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 import AddColumn from "@/Pages/AddColumn.vue";
 import Default from "@/Layouts/Default.vue";
+import DetailExist from "@/Pages/Group/DetailExist.vue";
 import Group from "@/Pages/Group/Index.vue";
 import GroupInterface from "@/Interfaces/GroupInterface.ts";
 import { useGroupStore } from "@/src/stores/group.js";
@@ -96,6 +99,11 @@ onBeforeUnmount(() => {
     store.groups = [];
     store.taskLoading = null;
     store.groupLoading = null;
+    store.itemEditBefore = null;
+    store.editedGroup = null;
+    store.validNewTask = null;
+    store.foundTask = [];
+    store.detailViewed = false;
 });
 </script>
 
