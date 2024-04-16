@@ -65,6 +65,7 @@ class GroupService
         DB::beginTransaction();
         try {
             $group = $this->model->create($request);
+            $group = $this->show($group->id);
 
             DB::commit();
 

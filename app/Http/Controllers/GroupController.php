@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Helper;
+use App\Http\Requests\AddGroupRequest;
 use App\Models\Group;
 use App\Services\GroupService;
 use Illuminate\Http\Request;
@@ -37,9 +38,20 @@ class GroupController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(AddGroupRequest $request)
     {
-        //
+        if ($request->wantsJson()) {
+            try {
+                $group = $this->groupService->create($request->all());
+
+                return response()->json([
+                    'success' => true,
+                    'data'    => $group,
+                ]);
+            } catch (\Throwable $th) {
+                throw new \ErrorException($th->getMessage());
+            }
+        }
     }
 
     /**

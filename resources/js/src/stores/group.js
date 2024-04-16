@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 import { ref } from "vue";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 
 export const useGroupStore = defineStore("group", () => {
     const groups = ref([]);
@@ -28,6 +28,42 @@ export const useGroupStore = defineStore("group", () => {
                     console.log(error);
                 });
         }, 2000);
+    }
+
+    async function addGroup() {
+        const { value: title } = await Swal.fire({
+            title: "Column Title",
+            input: "text",
+            showCancelButton: true,
+            inputValidator: (value) => {
+                if (!value) {
+                    return "You need to write something!";
+                }
+            },
+        });
+
+        if (title) {
+            const url = route("group.store");
+            axios
+                .post(url, {
+                    title: title,
+                })
+                .then(({ data }) => {
+                    groups.value.splice(groups.value.length - 1, 0, {
+                        id: data.data.id,
+                        title: data.data.title,
+                        color: data.data.color,
+                        for_complete: data.data.for_complete,
+                        is_default: data.data.is_default,
+                        created_at: data.data.created_at,
+                        updated_at: data.data.updated_at,
+                        tasks: [],
+                    });
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
     }
 
     function saveEditGroup(groupIndex, value) {
@@ -67,13 +103,17 @@ export const useGroupStore = defineStore("group", () => {
             if (result.isConfirmed) {
                 const url = route("group.destroy", id);
 
-                axios.delete(url).then(() => {
-                    groups.value.splice(groupIndex, 1);
-                }).catch((error) => {
-                    console.log(error);
-                }).finally(() => {
-                    groupLoading.value = null;
-                })
+                axios
+                    .delete(url)
+                    .then(() => {
+                        groups.value.splice(groupIndex, 1);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+                    .finally(() => {
+                        groupLoading.value = null;
+                    });
             }
         });
     }
@@ -98,8 +138,7 @@ export const useGroupStore = defineStore("group", () => {
             })
             .then(({ data }) => {
                 if (data.success) {
-                    groups.value[groupIndex].tasks[taskIndex].id =
-                        data.data.id;
+                    groups.value[groupIndex].tasks[taskIndex].id = data.data.id;
                     groups.value[groupIndex].tasks[taskIndex].name =
                         data.data.name;
                     groups.value[groupIndex].tasks[taskIndex].completed =
@@ -111,7 +150,7 @@ export const useGroupStore = defineStore("group", () => {
                 }
             })
             .catch((error) => {
-                console.log(error)
+                console.log(error);
             })
             .finally(() => {
                 groupLoading.value = null;
@@ -170,6 +209,7 @@ export const useGroupStore = defineStore("group", () => {
 
     return {
         changeColor,
+        addGroup,
         saveEditGroup,
         editedGroup,
         addTask,
