@@ -23,8 +23,9 @@ class GroupController extends Controller
     {
         $groups = $this->groupService->regularGroup();
         $complete_group = Helper::completeGroup()->load('tasks');
+        $search_feature = config('features.search');
 
-        return Inertia::render('Index', compact('groups', 'complete_group'));
+        return Inertia::render('Index', compact('groups', 'complete_group', 'search_feature'));
     }
 
     /**

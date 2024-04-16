@@ -83,12 +83,13 @@ import { useGroupStore } from "@/src/stores/group.js";
 const props = defineProps({
     groups: Array as () => GroupInterface[],
     complete_group: Object as () => GroupInterface[],
+    search_feature: Boolean
 });
 
 const store = useGroupStore();
 const groupData = ref(props.groups);
 const completeGroup = ref(props.complete_group);
-const searchFeatures = import.meta.env.VITE_FEATURE_SEARCH;
+const searchFeatures = props.search_feature;
 
 onMounted(() => {
     store.groups = groupData.value;
