@@ -248,9 +248,11 @@
 <script lang="ts" name="page_group_index" setup>
 import { dateTimeFormatter } from "@/src/helpers/formatter.ts";
 import { useGroupStore } from "@/src/stores/group.js";
+import { ref } from "vue";
 import draggable from "vuedraggable";
 
 const store = useGroupStore();
+const drag = ref(false);
 
 const calculateColor = (color) => {
     const rgb = color.match(/\d+/g);

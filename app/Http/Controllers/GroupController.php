@@ -19,7 +19,7 @@ class GroupController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $groups = $this->groupService->regularGroup();
         $complete_group = Helper::completeGroup()->load('tasks');
