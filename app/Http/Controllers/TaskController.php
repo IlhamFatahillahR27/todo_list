@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Helper;
 use App\Http\Requests\AddTaskRequest;
+use App\Http\Requests\UpdateGroupRequest;
 use App\Models\Task;
 use App\Services\TaskService;
 use Illuminate\Http\Request;
@@ -110,6 +111,23 @@ class TaskController extends Controller
             ]);
         } catch (\Throwable $th) {
             throw new \ErrorException($th->getMessage());
+        }
+    }
+
+    public function updateGroup(UpdateGroupRequest $request)
+    {
+        if ($request->wantsJson()) {
+            try {
+
+                $task = $this->taskService->updateGroup($request->group_id, $request->task_id);
+
+                return response()->json([
+                    'success' => true,
+                    'data'    => $task,
+                ]);
+            } catch (\Throwable $th) {
+                throw new \ErrorException($th->getMessage());
+            }
         }
     }
 }

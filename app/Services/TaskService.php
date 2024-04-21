@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Group;
 use App\Models\Task;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -95,6 +96,29 @@ class TaskService
 
             return $task;
         } catch (\Throwable $th) {
+            throw new \ErrorException($th->getMessage());
+        }
+    }
+
+    public function updateGroup($group_id, $task_id)
+    {
+        DB::beginTransaction();
+        try {
+            $group = Group::where('id', $group_id)->firstOrFail();
+            $task = Task::where('id', $task_id)->firstOrFail();
+
+            $updateData = [
+                'group_id' => $group->id,
+                'completed' => $group->for_complete
+            ];
+
+            $task->update($updateData);
+
+            DB::commit();
+
+            return $task;
+        } catch (\Throwable $th) {
+            DB::rollBack();
             throw new \ErrorException($th->getMessage());
         }
     }

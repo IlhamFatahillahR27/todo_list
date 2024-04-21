@@ -25,15 +25,6 @@ class GroupService
         return $this->model;
     }
 
-    // public function select2()
-    // {
-    //     $group = $this->model()
-    //         ->selectRaw('id as value, nama as label')
-    //         ->get();
-
-    //     return $group;
-    // }
-
     public function all(): Collection
     {
         $group = $this->model->all();

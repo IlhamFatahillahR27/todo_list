@@ -143,6 +143,7 @@
                     @start="drag = true"
                     @end="drag = false"
                     item-key="id"
+                    @change="dragEvent($event, item.id, index)"
                     class="d-flex overflow-y-auto flex-column ga-3"
                     v-if="item"
                 >
@@ -246,10 +247,13 @@
                                                             }"
                                                             href="#"
                                                             rel="noopener noreferrer"
-                                                            @click="store.detailViewed = true"
+                                                            @click="
+                                                                store.detailViewed = true
+                                                            "
                                                         >
                                                             <b
-                                                                >See details here...</b
+                                                                >See details
+                                                                here...</b
                                                             ></a
                                                         >
                                                     </span>
@@ -330,11 +334,30 @@
 <script lang="ts" name="page_group_index" setup>
 import { dateTimeFormatter } from "@/src/helpers/formatter.ts";
 import { useGroupStore } from "@/src/stores/group.js";
+import axios from "axios";
 import { ref } from "vue";
 import draggable from "vuedraggable";
 
 const store = useGroupStore();
 const drag = ref(false);
+
+const dragEvent = (event, group_id, group_index) => {
+    if (event.added) {
+
+        const url = route("task.updateGroup");
+        axios
+            .post(url, {
+                group_id: group_id,
+                task_id: event.added.element.id,
+            })
+            .then(({ data }) => {
+                store.groups[group_index].tasks[event.added.newIndex] = data.data;
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+};
 
 const calculateColor = (color) => {
     const rgb = color.match(/\d+/g);
